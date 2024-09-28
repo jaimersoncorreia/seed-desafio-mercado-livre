@@ -7,4 +7,6 @@ import tech.bacuri.mecadolivre.entity.Usuario;
 
 public interface UsuarioRepository extends CrudRepository<Usuario, String> {
     boolean existsByEmail(@NotBlank @Email String email);
+
+    Usuario getByEmail(@NotBlank @Email String email);
 }
