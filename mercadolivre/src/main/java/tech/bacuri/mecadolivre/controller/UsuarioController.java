@@ -2,7 +2,6 @@ package tech.bacuri.mecadolivre.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.validation.Validator;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import tech.bacuri.mecadolivre.dto.NovoUsuarioForm;
@@ -18,7 +17,7 @@ public class UsuarioController {
 
     @InitBinder
     public void init(WebDataBinder binder) {
-binder.addValidators(proibeUsuarioComEmailDuplicadoValidator);
+        binder.addValidators(proibeUsuarioComEmailDuplicadoValidator);
     }
 
     @PostMapping
