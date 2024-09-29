@@ -1,8 +1,10 @@
 package tech.bacuri.mecadolivre.dto;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -15,6 +17,11 @@ import tech.bacuri.mecadolivre.entity.Usuario;
 import tech.bacuri.mecadolivre.repository.CategoriaRepository;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -29,8 +36,6 @@ public class NovoProdutoForm {
     @Positive
     private Long quantidade;
 
-    private String caracteristicas;
-
     @NotBlank
     @Length(max = 1000)
     private String descricao;
@@ -39,9 +44,30 @@ public class NovoProdutoForm {
     @ExistsId(domainClass = Categoria.class, fieldName = "id")
     private Long idCategoria;
 
+    @Size(min = 3)
+    @Valid
+    private List<NovaCaracteristicaForm> caracteristicaList = new ArrayList<>();
+
     public Produto toProduto(CategoriaRepository repository, Usuario dono) {
         Categoria categoria = repository.getCategoriaById(idCategoria);
         Assert.notNull(categoria, "categoria não pode está nulo");
-        return new Produto(nome, valor, quantidade, caracteristicas, descricao, categoria, dono);
+        return new Produto(nome, valor, quantidade, descricao, categoria, dono, caracteristicaList);
+    }
+
+    public List<String> buscaCaracteristicasRepetidas() {
+        Map<String, Integer> contagem = new HashMap<>();
+
+        List<String> lista = new ArrayList<>(caracteristicaList
+                .stream()
+                .map(NovaCaracteristicaForm::getNome)
+                .toList());
+
+        lista.forEach(elemento -> contagem.merge(elemento, 1, Integer::sum));
+
+        return contagem.entrySet()
+                .stream()
+                .filter(entry -> entry.getValue() > 1)
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
     }
 }

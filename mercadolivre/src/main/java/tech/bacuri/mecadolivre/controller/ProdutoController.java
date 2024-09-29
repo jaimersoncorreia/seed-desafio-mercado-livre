@@ -2,16 +2,15 @@ package tech.bacuri.mecadolivre.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.*;
 import tech.bacuri.mecadolivre.dto.NovoProdutoForm;
 import tech.bacuri.mecadolivre.entity.Produto;
 import tech.bacuri.mecadolivre.entity.Usuario;
 import tech.bacuri.mecadolivre.repository.CategoriaRepository;
 import tech.bacuri.mecadolivre.repository.ProdutoRepository;
 import tech.bacuri.mecadolivre.repository.UsuarioRepository;
+import tech.bacuri.mecadolivre.validator.ProibeCaracteristicaComNomeIgualValidator;
 
 @RequiredArgsConstructor
 @RestController
@@ -21,6 +20,11 @@ public class ProdutoController {
     private final CategoriaRepository categoriaRepository;
     private final ProdutoRepository produtoRepository;
     private final UsuarioRepository usuarioRepository;
+
+    @InitBinder
+    public void init(WebDataBinder binder) {
+        binder.addValidators(new ProibeCaracteristicaComNomeIgualValidator());
+    }
 
     @PostMapping
     public String novoProduto(@RequestBody @Valid NovoProdutoForm form) {
