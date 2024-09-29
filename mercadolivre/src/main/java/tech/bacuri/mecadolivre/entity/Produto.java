@@ -15,6 +15,7 @@ import tech.bacuri.mecadolivre.dto.NovaCaracteristicaForm;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -71,12 +72,15 @@ public class Produto {
         this.descricao = descricao;
         this.categoria = categoria;
         this.dono = dono;
-        Set<CaracteristicaProduto> novasCaracteristicas = caracteristicaList.stream()
-                .map(novaCaracteristica -> novaCaracteristica.toCaracteristica(this))
-                .collect(Collectors.toSet());
-        this.caracteristicaProdutoList.addAll(novasCaracteristicas);
+        this.caracteristicaProdutoList.addAll(obterNovaCaracteristicasList(caracteristicaList));
 
         Assert.isTrue(this.caracteristicaProdutoList.size() >= 3, "todo produto precisa ter no mínimo 3 ou mais características");
+    }
+
+    private Set<CaracteristicaProduto> obterNovaCaracteristicasList(List<NovaCaracteristicaForm> caracteristicaList) {
+        return caracteristicaList.stream()
+                .map(novaCaracteristica -> novaCaracteristica.toCaracteristica(this))
+                .collect(Collectors.toSet());
     }
 
     public void associaImagens(Set<String> links) {
@@ -85,5 +89,13 @@ public class Produto {
                 .collect(Collectors.toSet());
 
         this.imagens.addAll(imagens);
+    }
+
+    public boolean pertenceAo(Usuario dono) {
+        return Objects.equals(this.dono.getId(), dono.getId());
+    }
+
+    public boolean naoPertenceAo(Usuario dono) {
+        return !pertenceAo(dono);
     }
 }

@@ -3,8 +3,10 @@ package tech.bacuri.mecadolivre.controller;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import tech.bacuri.mecadolivre.componentes.Uploader;
 import tech.bacuri.mecadolivre.dto.NovasImagensForm;
 import tech.bacuri.mecadolivre.dto.NovoProdutoForm;
@@ -43,10 +45,14 @@ public class ProdutoController {
     @PostMapping("/{id}/imagens")
     public String adicionarImagens(@PathVariable Long id, @Valid NovasImagensForm form) {
 
-        Set<String> links = uploader.envia(form.getImagens());
+        Usuario dono = usuarioRepository.getByEmail("teste@teste.com");
+//        Usuario dono = usuarioRepository.getByEmail("teste1@teste.com");
         Produto produto = produtoRepository.getProdutoById(id);
-        produto.associaImagens(links);
 
+        if (produto.naoPertenceAo(dono)) throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+
+        Set<String> links = uploader.envia(form.getImagens());
+        produto.associaImagens(links);
         produtoRepository.save(produto);
         return links.toString();
     }
