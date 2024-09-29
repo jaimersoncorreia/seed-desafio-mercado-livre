@@ -1,9 +1,12 @@
 package tech.bacuri.mecadolivre.controller;
 
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import tech.bacuri.mecadolivre.componentes.Uploader;
+import tech.bacuri.mecadolivre.dto.NovasImagensForm;
 import tech.bacuri.mecadolivre.dto.NovoProdutoForm;
 import tech.bacuri.mecadolivre.entity.Produto;
 import tech.bacuri.mecadolivre.entity.Usuario;
@@ -11,6 +14,8 @@ import tech.bacuri.mecadolivre.repository.CategoriaRepository;
 import tech.bacuri.mecadolivre.repository.ProdutoRepository;
 import tech.bacuri.mecadolivre.repository.UsuarioRepository;
 import tech.bacuri.mecadolivre.validator.ProibeCaracteristicaComNomeIgualValidator;
+
+import java.util.Set;
 
 @RequiredArgsConstructor
 @RestController
@@ -20,8 +25,9 @@ public class ProdutoController {
     private final CategoriaRepository categoriaRepository;
     private final ProdutoRepository produtoRepository;
     private final UsuarioRepository usuarioRepository;
+    private final Uploader uploader;
 
-    @InitBinder
+    @InitBinder("novoProdutoForm")
     public void init(WebDataBinder binder) {
         binder.addValidators(new ProibeCaracteristicaComNomeIgualValidator());
     }
@@ -31,5 +37,17 @@ public class ProdutoController {
         Usuario dono = usuarioRepository.getByEmail("teste@teste.com");
         Produto produto = form.toProduto(categoriaRepository, dono);
         return produtoRepository.save(produto).toString();
+    }
+
+    @Transactional
+    @PostMapping("/{id}/imagens")
+    public String adicionarImagens(@PathVariable Long id, @Valid NovasImagensForm form) {
+
+        Set<String> links = uploader.envia(form.getImagens());
+        Produto produto = produtoRepository.getProdutoById(id);
+        produto.associaImagens(links);
+
+        produtoRepository.save(produto);
+        return links.toString();
     }
 }

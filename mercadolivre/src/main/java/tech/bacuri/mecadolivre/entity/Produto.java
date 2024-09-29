@@ -55,6 +55,9 @@ public class Produto {
     @OneToMany(mappedBy = "produto", cascade = CascadeType.PERSIST)
     private Set<CaracteristicaProduto> caracteristicaProdutoList = new HashSet<>();
 
+    @OneToMany(mappedBy = "produto", cascade = CascadeType.MERGE)
+    private Set<ImagemProduto> imagens = new HashSet<>();
+
     public Produto(@NotBlank String nome,
                    @Positive BigDecimal valor,
                    @Positive Long quantidade,
@@ -74,5 +77,13 @@ public class Produto {
         this.caracteristicaProdutoList.addAll(novasCaracteristicas);
 
         Assert.isTrue(this.caracteristicaProdutoList.size() >= 3, "todo produto precisa ter no mínimo 3 ou mais características");
+    }
+
+    public void associaImagens(Set<String> links) {
+        Set<ImagemProduto> imagens = links.stream()
+                .map(link -> new ImagemProduto(this, link))
+                .collect(Collectors.toSet());
+
+        this.imagens.addAll(imagens);
     }
 }
