@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
 
 @Getter
 @Setter
+@NoArgsConstructor(onConstructor_ = @Deprecated)
 @ToString
 public class NovoProdutoForm {
     @NotBlank
@@ -47,6 +49,13 @@ public class NovoProdutoForm {
     @Size(min = 3)
     @Valid
     private List<NovaCaracteristicaForm> caracteristicaList = new ArrayList<>();
+
+    public NovoProdutoForm(String nome, Long quantidade, String descricao, List<NovaCaracteristicaForm> novaCaracteristicaFormList) {
+        this.nome = nome;
+        this.quantidade = quantidade;
+        this.descricao = descricao;
+        this.caracteristicaList.addAll(novaCaracteristicaFormList);
+    }
 
     public Produto toProduto(CategoriaRepository repository, Usuario dono) {
         Categoria categoria = repository.getCategoriaById(idCategoria);
