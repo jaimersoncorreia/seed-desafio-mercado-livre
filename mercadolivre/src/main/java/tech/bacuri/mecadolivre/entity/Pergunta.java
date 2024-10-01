@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @NoArgsConstructor(onConstructor_ = @Deprecated)
 @RequiredArgsConstructor
 @Entity
@@ -23,6 +25,12 @@ public class Pergunta {
     @NonNull
     private String titulo;
 
+    @Getter
+    @NotNull
+    @NonNull
+    @ManyToOne
+    private Usuario interessado;
+
     @NotNull
     @NonNull
     @ManyToOne
@@ -30,6 +38,9 @@ public class Pergunta {
 
     @NotNull
     @NonNull
-    @ManyToOne
-    private Usuario interessado;
+    private LocalDateTime instante;
+
+    public Usuario getDonoProduto() {
+        return produto.getDono();
+    }
 }

@@ -50,6 +50,7 @@ public class Produto {
     @ManyToOne
     private Categoria categoria;
 
+    @Getter
     @NotNull
     @ManyToOne
     private Usuario dono;
@@ -86,7 +87,7 @@ public class Produto {
     }
 
     public void associaImagens(Set<String> links) {
-        Set<ImagemProduto> imagens = links.stream()
+        var imagens = links.stream()
                 .map(link -> new ImagemProduto(this, link))
                 .collect(Collectors.toSet());
 

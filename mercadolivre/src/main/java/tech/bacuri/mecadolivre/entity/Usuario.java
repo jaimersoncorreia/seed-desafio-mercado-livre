@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.util.Assert;
@@ -13,15 +13,16 @@ import tech.bacuri.mecadolivre.dto.SenhaLimpa;
 
 import java.time.LocalDateTime;
 
-@Data
 @NoArgsConstructor(onConstructor_ = @Deprecated)
 @Entity
 @SequenceGenerator(sequenceName = "SQ_USUARIO", allocationSize = 1, name = "usuario")
 public class Usuario {
+    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "usuario")
     private Long id;
 
+    @Getter
     @NotBlank
     @Email
     private String email;
@@ -29,6 +30,7 @@ public class Usuario {
     @NotBlank
     private String senha;
 
+    @Getter
     @Past
     @NotNull
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
