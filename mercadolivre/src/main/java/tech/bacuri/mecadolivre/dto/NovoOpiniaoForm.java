@@ -4,7 +4,6 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import tech.bacuri.mecadolivre.entity.Opiniao;
@@ -14,7 +13,6 @@ import tech.bacuri.mecadolivre.entity.Usuario;
 @RequiredArgsConstructor
 public class NovoOpiniaoForm {
 
-    @Getter
     @Min(1)
     @Max(5)
     @NonNull
