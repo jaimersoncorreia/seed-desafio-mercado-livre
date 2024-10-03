@@ -1,9 +1,11 @@
 package tech.bacuri.mecadolivre.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.lang.NonNull;
 
@@ -15,14 +17,17 @@ public class CaracteristicaProduto {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "caracteristicaProduto")
     private Long id;
 
+    @Getter
     @NotBlank
     @NonNull
     private String nome;
 
+    @Getter
     @NotBlank
     @NonNull
     private String descricao;
 
+    @JsonIgnore
     @NonNull
     @NotNull
     @ManyToOne

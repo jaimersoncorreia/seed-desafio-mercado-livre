@@ -1,12 +1,10 @@
 package tech.bacuri.mecadolivre.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -14,7 +12,7 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 @Entity
 @SequenceGenerator(name = "perguntaSeq", sequenceName = "SQ_PERGUNTA")
-public class Pergunta {
+public class Pergunta implements Comparable<Pergunta> {
     @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "perguntaSeq")
@@ -31,6 +29,7 @@ public class Pergunta {
     @ManyToOne
     private Usuario interessado;
 
+    @JsonIgnore
     @NotNull
     @NonNull
     @ManyToOne
@@ -42,5 +41,10 @@ public class Pergunta {
 
     public Usuario getDonoProduto() {
         return produto.getDono();
+    }
+
+    @Override
+    public int compareTo(Pergunta o) {
+        return this.titulo.compareTo(o.getTitulo());
     }
 }

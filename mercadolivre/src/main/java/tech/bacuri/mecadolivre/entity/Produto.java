@@ -14,10 +14,8 @@ import org.springframework.util.Assert;
 import tech.bacuri.mecadolivre.dto.NovaCaracteristicaForm;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @ToString
@@ -34,6 +32,7 @@ public class Produto {
     @Getter
     private String nome;
 
+    @Getter
     @NotNull
     @Positive
     private BigDecimal valor;
@@ -42,6 +41,7 @@ public class Produto {
     @Positive
     private Long quantidade;
 
+    @Getter
     @NotBlank
     @Length(max = 1000)
     private String descricao;
@@ -56,11 +56,14 @@ public class Produto {
     private Usuario dono;
 
     @NotNull
-    @OneToMany(mappedBy = "produto", cascade = CascadeType.PERSIST)
-    private Set<CaracteristicaProduto> caracteristicaProdutoList = new HashSet<>();
+    @OneToMany(mappedBy = "produto", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    private Set<CaracteristicaProduto> caracteristicas = new HashSet<>();
 
-    @OneToMany(mappedBy = "produto", cascade = CascadeType.MERGE)
+    @OneToMany(mappedBy = "produto", cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     private Set<ImagemProduto> imagens = new HashSet<>();
+
+    @OneToMany(mappedBy = "produto", fetch = FetchType.EAGER)
+    private SortedSet<Pergunta> perguntas = new TreeSet<>();
 
     public Produto(@NotBlank String nome,
                    @Positive BigDecimal valor,
@@ -75,9 +78,9 @@ public class Produto {
         this.descricao = descricao;
         this.categoria = categoria;
         this.dono = dono;
-        this.caracteristicaProdutoList.addAll(obterNovaCaracteristicasList(caracteristicaList));
+        this.caracteristicas.addAll(obterNovaCaracteristicasList(caracteristicaList));
 
-        Assert.isTrue(this.caracteristicaProdutoList.size() >= 3, "todo produto precisa ter no mínimo 3 ou mais características");
+        Assert.isTrue(this.caracteristicas.size() >= 3, "todo produto precisa ter no mínimo 3 ou mais características");
     }
 
     private Set<CaracteristicaProduto> obterNovaCaracteristicasList(List<NovaCaracteristicaForm> caracteristicaList) {
@@ -100,5 +103,17 @@ public class Produto {
 
     public boolean naoPertenceAo(Usuario dono) {
         return !pertenceAo(dono);
+    }
+
+    public <T> Set<T> mapeiaCaracteristicas(Function<CaracteristicaProduto, T> funcaoMapeadora) {
+        return this.caracteristicas.stream().map(funcaoMapeadora).collect(Collectors.toSet());
+    }
+
+    public <T> Set<T> mapeiaImagens(Function<ImagemProduto, T> funcaoMapeadora) {
+        return this.imagens.stream().map(funcaoMapeadora).collect(Collectors.toSet());
+    }
+
+    public <T extends Comparable<T>> SortedSet<T> mapeiaPerguntas(Function<Pergunta, T> funcaoMapeadora) {
+        return this.perguntas.stream().map(funcaoMapeadora).collect(Collectors.toCollection(TreeSet::new));
     }
 }
