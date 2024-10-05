@@ -2,6 +2,7 @@ package tech.bacuri.mecadolivre.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -15,15 +16,18 @@ public class Opiniao {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "opiniao")
     private Long id;
 
+    @Getter
     @Min(1)
     @Max(5)
     @NonNull
     private Integer nota;
 
+    @Getter
     @NonNull
     @NotBlank
     private String titulo;
 
+    @Getter
     @NotBlank
     @NonNull
     @Size(max = 500)

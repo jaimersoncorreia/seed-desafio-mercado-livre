@@ -26,7 +26,7 @@ public class OpiniaoController {
     @PostMapping
     public ResponseEntity<?> adiciona(@PathVariable Long id, @RequestBody @Valid NovoOpiniaoForm form) {
         Produto produto = produtoRepository.getProdutoById(id);
-        Usuario consumidor = usuarioRepository.getByEmail("teste@teste.com");
+        Usuario consumidor = usuarioRepository.getByEmail("consumidor@bacuri.tech");
         Opiniao novaOpiniao = form.toOpiniao(produto, consumidor);
 
         Opiniao opiniao = opiniaoRepository.save(novaOpiniao);

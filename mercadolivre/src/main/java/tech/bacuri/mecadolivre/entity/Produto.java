@@ -65,6 +65,9 @@ public class Produto {
     @OneToMany(mappedBy = "produto", fetch = FetchType.EAGER)
     private SortedSet<Pergunta> perguntas = new TreeSet<>();
 
+    @OneToMany(mappedBy = "produto", fetch = FetchType.EAGER)
+    private Set<Opiniao> opinioies = new HashSet<>();
+
     public Produto(@NotBlank String nome,
                    @Positive BigDecimal valor,
                    @Positive Long quantidade,
@@ -115,5 +118,9 @@ public class Produto {
 
     public <T extends Comparable<T>> SortedSet<T> mapeiaPerguntas(Function<Pergunta, T> funcaoMapeadora) {
         return this.perguntas.stream().map(funcaoMapeadora).collect(Collectors.toCollection(TreeSet::new));
+    }
+
+    public <T> Set<T> mapeiaOpinioes(Function<Opiniao, T> funcaoMapeadora) {
+        return this.opinioies.stream().map(funcaoMapeadora).collect(Collectors.toSet());
     }
 }
