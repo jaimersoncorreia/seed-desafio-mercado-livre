@@ -1,11 +1,13 @@
 package tech.bacuri.mecadolivre.dto;
 
+import lombok.Getter;
 import tech.bacuri.mecadolivre.entity.Opiniao;
 
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+@Getter
 public class Opinioes {
     private final Set<Opiniao> opinioes;
 
