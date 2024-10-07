@@ -12,6 +12,7 @@ import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.util.Assert;
 import tech.bacuri.mecadolivre.dto.NovaCaracteristicaForm;
+import tech.bacuri.mecadolivre.dto.Opinioes;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -66,7 +67,7 @@ public class Produto {
     private SortedSet<Pergunta> perguntas = new TreeSet<>();
 
     @OneToMany(mappedBy = "produto", fetch = FetchType.EAGER)
-    private Set<Opiniao> opinioies = new HashSet<>();
+    private Set<Opiniao> opinioes = new HashSet<>();
 
     public Produto(@NotBlank String nome,
                    @Positive BigDecimal valor,
@@ -120,7 +121,7 @@ public class Produto {
         return this.perguntas.stream().map(funcaoMapeadora).collect(Collectors.toCollection(TreeSet::new));
     }
 
-    public <T> Set<T> mapeiaOpinioes(Function<Opiniao, T> funcaoMapeadora) {
-        return this.opinioies.stream().map(funcaoMapeadora).collect(Collectors.toSet());
+    public Opinioes getOpinioes() {
+        return new Opinioes(this.opinioes);
     }
 }

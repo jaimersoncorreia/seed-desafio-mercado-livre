@@ -40,18 +40,25 @@ public class DetalheProdutoView {
 
     private Double mediaNotas;
 
+    private Integer total;
+
     public DetalheProdutoView(Produto produto) {
         this.descricao = produto.getDescricao();
         this.nome = produto.getNome();
         this.preco = produto.getValor();
+        //1
         this.caracteristicas.addAll(produto.mapeiaCaracteristicas(DetalheProdutoCaracteristica::new));
+        //1
         this.linksImagens = produto.mapeiaImagens(ImagemProduto::getLink);
+        //1
         this.perguntas = produto.mapeiaPerguntas(Pergunta::getTitulo);
-        this.opinioes = produto.mapeiaOpinioes(DetalheProdutoView::construirOpiniaoView);
-        this.mediaNotas = produto.mapeiaOpinioes(Opiniao::getNota).stream()
-                .mapToInt(nota -> nota)
-                .average()
-                .orElse(0.0);
+        //1
+        Opinioes opinioes = produto.getOpinioes();
+        //1
+        this.opinioes = opinioes.mapeiaOpinioes(DetalheProdutoView::construirOpiniaoView);
+
+        this.mediaNotas = opinioes.media();
+        this.total = opinioes.total();
     }
 
     private static Map<String, String> construirOpiniaoView(Opiniao opiniao) {
