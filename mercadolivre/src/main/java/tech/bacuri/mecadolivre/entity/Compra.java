@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.web.util.UriComponentsBuilder;
+import tech.bacuri.mecadolivre.converter.GatewayPagamentoConverter;
 import tech.bacuri.mecadolivre.enums.GatewayPagamento;
 
 @NoArgsConstructor(onConstructor_ = @Deprecated)
@@ -32,8 +33,8 @@ public class Compra {
     @Valid
     private Usuario comprador;
 
-    @Enumerated
     @NotNull
+    @Convert(converter = GatewayPagamentoConverter.class)
     private GatewayPagamento gateway;
 
     public Compra(Produto produtoASercomprado, Integer quantidade, Usuario comprador, @NotNull GatewayPagamento gateway) {
