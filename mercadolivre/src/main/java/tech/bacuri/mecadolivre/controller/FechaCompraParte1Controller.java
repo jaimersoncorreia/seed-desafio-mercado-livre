@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 import tech.bacuri.mecadolivre.dto.NovaCompraForm;
 import tech.bacuri.mecadolivre.entity.Compra;
-import tech.bacuri.mecadolivre.enums.GatewayPagamento;
+import tech.bacuri.mecadolivre.infra.Emails;
 import tech.bacuri.mecadolivre.repository.CompraRepository;
 import tech.bacuri.mecadolivre.repository.ProdutoRepository;
 import tech.bacuri.mecadolivre.repository.UsuarioRepository;
@@ -27,6 +27,7 @@ public class FechaCompraParte1Controller {
     private final UsuarioRepository usuarioRepository;
     //1
     private final CompraRepository compraRepository;
+    private final Emails emails;
 
     @Transactional
     @PostMapping("/compras")
@@ -45,18 +46,9 @@ public class FechaCompraParte1Controller {
             var gateway = form.getGateway();
             //1
             var novaCompra = compraRepository.save(new Compra(produtoASercomprado, quantidade, comprador, gateway));
+            emails.novaCompra(novaCompra);
 
-            //1
-            if (gateway.equals(GatewayPagamento.PAGSEGURO)) {
-                var urlRetornoPagseguro = uriComponentsBuilder.path("/retorno-pagseguro/{id}")
-                        .buildAndExpand(novaCompra.getId()).toString();
-                return ResponseEntity.ok("pagseguro.com/" + novaCompra.getId() + "?redirectUrl=" + urlRetornoPagseguro);
-                //1
-            } else {
-                var urlRetornoPaypal = uriComponentsBuilder.path("retorno-paypal/{id}")
-                        .buildAndExpand(novaCompra.getId()).toString();
-                return ResponseEntity.ok("paypal.com/" + novaCompra.getId() + "?redirectUrl=" + urlRetornoPaypal);
-            }
+            return ResponseEntity.ok(novaCompra.urlRedirecionamento(uriComponentsBuilder));
         }
         var problemaComEstoque = new BindException(form, "novaCompraForm");
         problemaComEstoque.reject(null, "não foi possível realizar a compra por conta do estoque");

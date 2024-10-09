@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.web.util.UriComponentsBuilder;
 import tech.bacuri.mecadolivre.enums.GatewayPagamento;
 
 @NoArgsConstructor(onConstructor_ = @Deprecated)
@@ -40,5 +41,13 @@ public class Compra {
         this.quantidade = quantidade;
         this.comprador = comprador;
         this.gateway = gateway;
+    }
+
+    public String urlRedirecionamento(UriComponentsBuilder uriComponentsBuilder) {
+        return this.gateway.criarUrlRetorno(this, uriComponentsBuilder);
+    }
+
+    public Usuario getDonoProduto() {
+        return produtoASercomprado.getDono();
     }
 }
