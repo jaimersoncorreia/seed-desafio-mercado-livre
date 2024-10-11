@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.util.Assert;
 import org.springframework.web.util.UriComponentsBuilder;
 import tech.bacuri.mecadolivre.converter.GatewayPagamentoConverter;
-import tech.bacuri.mecadolivre.dto.RetornoPagseguroForm;
 import tech.bacuri.mecadolivre.enums.GatewayPagamento;
+import tech.bacuri.mecadolivre.interfaces.RetornoGatewayPagamento;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -61,7 +61,7 @@ public class Compra {
         return produtoASercomprado.getDono();
     }
 
-    public void adicionaTransacao(@Valid RetornoPagseguroForm form) {
+    public void adicionaTransacao(@Valid RetornoGatewayPagamento form) {
         var novaTransacao = form.toTransacao(this);
         Assert.isTrue(!this.transacoes.contains(novaTransacao), "Já existe uma transaçao igual a essa processada " + novaTransacao);
         var transacoesConcluidasComSucesso = this.transacoes.stream().filter(Transacao::concluidaComSucesso).collect(Collectors.toSet());
