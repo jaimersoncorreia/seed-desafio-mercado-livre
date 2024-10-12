@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 import tech.bacuri.mecadolivre.dto.NovaCompraForm;
 import tech.bacuri.mecadolivre.entity.Compra;
-import tech.bacuri.mecadolivre.infra.Emails;
+import tech.bacuri.mecadolivre.infra.EmailsService;
 import tech.bacuri.mecadolivre.repository.CompraRepository;
 import tech.bacuri.mecadolivre.repository.ProdutoRepository;
 import tech.bacuri.mecadolivre.repository.UsuarioRepository;
@@ -27,7 +27,7 @@ public class FechaCompraParte1Controller {
     private final UsuarioRepository usuarioRepository;
     //1
     private final CompraRepository compraRepository;
-    private final Emails emails;
+    private final EmailsService emailsService;
 
     @Transactional
     @PostMapping("/compras")
@@ -46,7 +46,7 @@ public class FechaCompraParte1Controller {
             var gateway = form.getGateway();
             //1
             var novaCompra = compraRepository.save(new Compra(produtoASercomprado, quantidade, comprador, gateway));
-            emails.novaCompra(novaCompra);
+            emailsService.novaCompra(novaCompra);
 
             return ResponseEntity.ok(novaCompra.urlRedirecionamento(uriComponentsBuilder));
         }

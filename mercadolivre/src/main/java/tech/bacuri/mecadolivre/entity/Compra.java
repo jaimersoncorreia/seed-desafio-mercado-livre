@@ -63,9 +63,22 @@ public class Compra {
 
     public void adicionaTransacao(@Valid RetornoGatewayPagamento form) {
         var novaTransacao = form.toTransacao(this);
-        Assert.isTrue(!this.transacoes.contains(novaTransacao), "Já existe uma transaçao igual a essa processada " + novaTransacao);
-        var transacoesConcluidasComSucesso = this.transacoes.stream().filter(Transacao::concluidaComSucesso).collect(Collectors.toSet());
-        Assert.isTrue(transacoesConcluidasComSucesso.isEmpty(), "Essa compra já foi concluída com sucesso");
+        Assert.isTrue(!this.transacoes.contains(novaTransacao),
+                "Já existe uma transaçao igual a essa processada " + novaTransacao);
+        Assert.isTrue(transacoesConcluidasComSucesso().isEmpty(), "Essa compra já foi concluída com sucesso");
         this.transacoes.add(novaTransacao);
+    }
+
+    private Set<Transacao> transacoesConcluidasComSucesso() {
+        Set<Transacao> concluidasComSucesso = this.transacoes.stream()
+                .filter(Transacao::concluidaComSucesso)
+                .collect(Collectors.toSet());
+        Assert.isTrue(concluidasComSucesso.size() <= 1,
+                "Deu ruim deu ruim deu ruim, tem mais de uma transação concluídas com sucesso " + this.id);
+        return concluidasComSucesso;
+    }
+
+    public boolean processadaComSucesso() {
+        return !transacoesConcluidasComSucesso().isEmpty();
     }
 }

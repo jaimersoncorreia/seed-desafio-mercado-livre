@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tech.bacuri.mecadolivre.dto.NovaPerguntaForm;
-import tech.bacuri.mecadolivre.infra.Emails;
+import tech.bacuri.mecadolivre.infra.EmailsService;
 import tech.bacuri.mecadolivre.repository.PerguntaRepository;
 import tech.bacuri.mecadolivre.repository.ProdutoRepository;
 import tech.bacuri.mecadolivre.repository.UsuarioRepository;
@@ -19,7 +19,7 @@ public class PerguntaController {
     private final ProdutoRepository produtoRepository;
     private final UsuarioRepository usuarioRepository;
     private final PerguntaRepository perguntaRepository;
-    private final Emails emails;
+    private final EmailsService emailsService;
 
     @Transactional
     @PostMapping
@@ -30,7 +30,7 @@ public class PerguntaController {
 
         var pergunta = perguntaRepository.save(novaPergunta);
 
-        emails.novaPergunta(novaPergunta);
+        emailsService.novaPergunta(novaPergunta);
 
         return ResponseEntity.ok(pergunta);
     }

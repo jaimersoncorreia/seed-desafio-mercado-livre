@@ -7,7 +7,7 @@ import tech.bacuri.mecadolivre.entity.Pergunta;
 
 @Service
 @RequiredArgsConstructor
-public class Emails {
+public class EmailsService {
     private final Mailer mailer;
 
     public void novaPergunta(Pergunta pergunta) {
