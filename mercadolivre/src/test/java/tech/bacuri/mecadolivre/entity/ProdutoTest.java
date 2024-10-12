@@ -21,7 +21,7 @@ class ProdutoTest {
         Categoria categoria = new Categoria("categoria");
         Usuario dono = new Usuario("email@email.com", new SenhaLimpa("123456"));
 
-        new Produto("nome", BigDecimal.TEN, 10L, "descrição", categoria, dono, novaCaracteristicaFormList);
+        new Produto("nome", BigDecimal.TEN, 10, "descrição", categoria, dono, novaCaracteristicaFormList);
     }
 
     @DisplayName("um produto não pode ser criado com menos de 3 características")
@@ -32,7 +32,7 @@ class ProdutoTest {
         Usuario dono = new Usuario("email@email.com", new SenhaLimpa("123456"));
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            new Produto("nome", BigDecimal.TEN, 10L, "descrição", categoria, dono, novaCaracteristicaFormList);
+            new Produto("nome", BigDecimal.TEN, 10, "descrição", categoria, dono, novaCaracteristicaFormList);
         });
     }
 
@@ -75,7 +75,7 @@ class ProdutoTest {
         );
         var categoria = new Categoria("categoria");
         var dono = new Usuario("email@email.com.br", new SenhaLimpa("senhaaa"));
-        var produto = new Produto("nome", BigDecimal.TEN, 10L, "descrição", categoria, dono, caracteristicas);
+        var produto = new Produto("nome", BigDecimal.TEN, 10, "descrição", categoria, dono, caracteristicas);
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> produto.abataEstoque(estoque));
     }
@@ -83,7 +83,7 @@ class ProdutoTest {
     @DisplayName("verifica estoque do produto")
     @ParameterizedTest
     @CsvSource({"1,1,true", "1,2,false", "4,2,true", "1,5,false"})
-    void abataEstoque2(Long qtdeEstoque, Integer qtdePedido, Boolean esperado) {
+    void abataEstoque2(Integer qtdeEstoque, Integer qtdePedido, Boolean esperado) {
         var caracteristicas = List.of(
                 new NovaCaracteristicaForm("key", "value"),
                 new NovaCaracteristicaForm("key2", "value2"),

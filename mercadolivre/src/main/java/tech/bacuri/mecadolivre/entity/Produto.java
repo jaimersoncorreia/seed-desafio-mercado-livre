@@ -40,7 +40,7 @@ public class Produto {
 
     @NotNull
     @Positive
-    private Long quantidade;
+    private Integer quantidade;
 
     @Getter
     @NotBlank
@@ -71,7 +71,7 @@ public class Produto {
 
     public Produto(@NotBlank String nome,
                    @Positive BigDecimal valor,
-                   @Positive Long quantidade,
+                   @Positive Integer quantidade,
                    @NotBlank @Length(max = 1000) String descricao,
                    Categoria categoria,
                    Usuario dono,

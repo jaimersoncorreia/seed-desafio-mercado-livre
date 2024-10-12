@@ -25,7 +25,7 @@ class ProibeCaracteristicaComNomeIgualValidatorTest {
     @ParameterizedTest
     @MethodSource("gerador")
     void validate(boolean resultadoEsperado, List<NovaCaracteristicaForm> formList) {
-        NovoProdutoForm form = new NovoProdutoForm("nome", 10L, "descrição", formList);
+        NovoProdutoForm form = new NovoProdutoForm("nome", 10, "descrição", formList);
         var validator = new ProibeCaracteristicaComNomeIgualValidator();
         var errors = new BeanPropertyBindingResult(form, "teste");
 

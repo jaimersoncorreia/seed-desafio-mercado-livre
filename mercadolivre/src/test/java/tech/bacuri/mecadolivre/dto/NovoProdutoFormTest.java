@@ -24,7 +24,7 @@ class NovoProdutoFormTest {
     @ParameterizedTest
     @MethodSource("gerador")
     void buscaCaracteristicasRepetidas(int esperado, List<NovaCaracteristicaForm> novaCaracteristicaFormList) {
-        NovoProdutoForm form = new NovoProdutoForm("nome", 10L, "descrição", novaCaracteristicaFormList);
+        NovoProdutoForm form = new NovoProdutoForm("nome", 10, "descrição", novaCaracteristicaFormList);
         Assertions.assertEquals(esperado, form.buscaCaracteristicasRepetidas().size());
     }
 }

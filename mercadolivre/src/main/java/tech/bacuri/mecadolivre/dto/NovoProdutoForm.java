@@ -36,7 +36,7 @@ public class NovoProdutoForm {
     private BigDecimal valor;
 
     @Positive
-    private Long quantidade;
+    private Integer quantidade;
 
     @NotBlank
     @Length(max = 1000)
@@ -50,7 +50,7 @@ public class NovoProdutoForm {
     @Valid
     private List<NovaCaracteristicaForm> caracteristicaList = new ArrayList<>();
 
-    public NovoProdutoForm(String nome, Long quantidade, String descricao, List<NovaCaracteristicaForm> novaCaracteristicaFormList) {
+    public NovoProdutoForm(String nome, Integer quantidade, String descricao, List<NovaCaracteristicaForm> novaCaracteristicaFormList) {
         this.nome = nome;
         this.quantidade = quantidade;
         this.descricao = descricao;

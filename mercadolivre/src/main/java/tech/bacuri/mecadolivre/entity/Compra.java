@@ -63,9 +63,9 @@ public class Compra {
 
     public void adicionaTransacao(@Valid RetornoGatewayPagamento form) {
         var novaTransacao = form.toTransacao(this);
-        Assert.isTrue(!this.transacoes.contains(novaTransacao),
+        Assert.state(!this.transacoes.contains(novaTransacao),
                 "Já existe uma transaçao igual a essa processada " + novaTransacao);
-        Assert.isTrue(transacoesConcluidasComSucesso().isEmpty(), "Essa compra já foi concluída com sucesso");
+        Assert.state(transacoesConcluidasComSucesso().isEmpty(), "Essa compra já foi concluída com sucesso");
         this.transacoes.add(novaTransacao);
     }
 
