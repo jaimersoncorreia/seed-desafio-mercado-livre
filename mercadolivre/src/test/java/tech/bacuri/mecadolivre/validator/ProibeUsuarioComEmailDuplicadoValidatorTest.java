@@ -8,8 +8,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mockito;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
-import tech.bacuri.mecadolivre.dto.NovoUsuarioForm;
-import tech.bacuri.mecadolivre.repository.UsuarioRepository;
+import tech.bacuri.mecadolivre.dto.mercado.NovoUsuarioForm;
+import tech.bacuri.mecadolivre.repository.mercado.UsuarioRepository;
 
 import java.util.stream.Stream;
 

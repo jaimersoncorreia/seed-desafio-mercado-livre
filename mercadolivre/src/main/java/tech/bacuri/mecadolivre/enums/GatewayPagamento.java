@@ -3,7 +3,7 @@ package tech.bacuri.mecadolivre.enums;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.web.util.UriComponentsBuilder;
-import tech.bacuri.mecadolivre.entity.Compra;
+import tech.bacuri.mecadolivre.entity.mercado.Compra;
 
 import java.util.Arrays;
 import java.util.Objects;

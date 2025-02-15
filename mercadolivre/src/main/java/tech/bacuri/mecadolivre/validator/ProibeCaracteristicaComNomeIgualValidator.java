@@ -4,7 +4,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
-import tech.bacuri.mecadolivre.dto.NovoProdutoForm;
+import tech.bacuri.mecadolivre.dto.mercado.NovoProdutoForm;
 
 import java.util.List;
 

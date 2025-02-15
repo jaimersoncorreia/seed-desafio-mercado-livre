@@ -6,8 +6,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.validation.BeanPropertyBindingResult;
-import tech.bacuri.mecadolivre.dto.NovaCaracteristicaForm;
-import tech.bacuri.mecadolivre.dto.NovoProdutoForm;
+import tech.bacuri.mecadolivre.dto.mercado.NovaCaracteristicaForm;
+import tech.bacuri.mecadolivre.dto.mercado.NovoProdutoForm;
 
 import java.util.List;
 import java.util.stream.Stream;

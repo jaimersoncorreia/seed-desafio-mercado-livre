@@ -6,8 +6,11 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
-import tech.bacuri.mecadolivre.dto.NovaCaracteristicaForm;
-import tech.bacuri.mecadolivre.dto.SenhaLimpa;
+import tech.bacuri.mecadolivre.dto.mercado.NovaCaracteristicaForm;
+import tech.bacuri.mecadolivre.dto.mercado.SenhaLimpa;
+import tech.bacuri.mecadolivre.entity.mercado.Categoria;
+import tech.bacuri.mecadolivre.entity.mercado.Produto;
+import tech.bacuri.mecadolivre.entity.mercado.Usuario;
 
 import java.math.BigDecimal;
 import java.util.List;

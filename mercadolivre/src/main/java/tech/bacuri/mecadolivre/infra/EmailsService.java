@@ -2,8 +2,8 @@ package tech.bacuri.mecadolivre.infra;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import tech.bacuri.mecadolivre.entity.Compra;
-import tech.bacuri.mecadolivre.entity.Pergunta;
+import tech.bacuri.mecadolivre.entity.mercado.Compra;
+import tech.bacuri.mecadolivre.entity.mercado.Pergunta;
 
 @Service
 @RequiredArgsConstructor

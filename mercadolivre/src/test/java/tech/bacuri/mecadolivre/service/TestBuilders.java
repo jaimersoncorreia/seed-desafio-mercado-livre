@@ -1,8 +1,8 @@
 package tech.bacuri.mecadolivre.service;
 
-import tech.bacuri.mecadolivre.dto.NovaCaracteristicaForm;
-import tech.bacuri.mecadolivre.dto.SenhaLimpa;
-import tech.bacuri.mecadolivre.entity.*;
+import tech.bacuri.mecadolivre.dto.mercado.NovaCaracteristicaForm;
+import tech.bacuri.mecadolivre.dto.mercado.SenhaLimpa;
+import tech.bacuri.mecadolivre.entity.mercado.*;
 import tech.bacuri.mecadolivre.enums.GatewayPagamento;
 import tech.bacuri.mecadolivre.enums.StatusTransacao;
 import tech.bacuri.mecadolivre.interfaces.RetornoGatewayPagamento;

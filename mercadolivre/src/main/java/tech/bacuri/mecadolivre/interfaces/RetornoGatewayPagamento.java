@@ -1,7 +1,7 @@
 package tech.bacuri.mecadolivre.interfaces;
 
-import tech.bacuri.mecadolivre.entity.Compra;
-import tech.bacuri.mecadolivre.entity.Transacao;
+import tech.bacuri.mecadolivre.entity.mercado.Compra;
+import tech.bacuri.mecadolivre.entity.mercado.Transacao;
 
 public interface RetornoGatewayPagamento {
     /**

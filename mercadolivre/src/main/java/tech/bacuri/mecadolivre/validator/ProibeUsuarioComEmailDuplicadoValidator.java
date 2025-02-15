@@ -5,8 +5,8 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
-import tech.bacuri.mecadolivre.dto.NovoUsuarioForm;
-import tech.bacuri.mecadolivre.repository.UsuarioRepository;
+import tech.bacuri.mecadolivre.dto.mercado.NovoUsuarioForm;
+import tech.bacuri.mecadolivre.repository.mercado.UsuarioRepository;
 
 @RequiredArgsConstructor
 @Component

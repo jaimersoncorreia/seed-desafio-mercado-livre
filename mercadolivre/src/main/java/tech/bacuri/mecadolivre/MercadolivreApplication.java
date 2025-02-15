@@ -32,6 +32,11 @@ public class MercadolivreApplication implements CommandLineRunner {
     @Transactional
     @Override
     public void run(String... args) throws Exception {
+        sumula();
+
+    }
+
+    private void sumula() {
         Participante jaimerson = participanteRepository.save(new Participante("Jaimerson", "12345678900"));
         Participante gabriela = participanteRepository.save(new Participante("Gabriela", "12345678901"));
 
@@ -60,6 +65,5 @@ public class MercadolivreApplication implements CommandLineRunner {
         Sumula reelaboracao = sumulaRepository.save(Sumula.criarSumulaRejeicao(sumula));
         reelaboracao.assinar(gabriela);
         reelaboracao.assinar(jaimerson);
-
     }
 }

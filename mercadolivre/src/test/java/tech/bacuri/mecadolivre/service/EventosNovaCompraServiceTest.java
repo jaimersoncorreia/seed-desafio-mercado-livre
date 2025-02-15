@@ -3,8 +3,9 @@ package tech.bacuri.mecadolivre.service;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import tech.bacuri.mecadolivre.entity.Compra;
+import tech.bacuri.mecadolivre.entity.mercado.Compra;
 import tech.bacuri.mecadolivre.interfaces.EventoCompraSucesso;
+import tech.bacuri.mecadolivre.service.mercado.EventosNovaCompraService;
 
 import java.util.Set;
 
