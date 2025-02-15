@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @NoArgsConstructor(onConstructor_ = @Deprecated)
 @Getter
@@ -26,4 +27,15 @@ public class Rejeicao {
     private LocalDateTime tsRejeicao;
 
     private String codigoVerificador;
+
+    public Rejeicao(Participante participante, Sumula sumula, String pauta) {
+        this.participante = participante;
+        this.sumula = sumula;
+        this.pauta = pauta;
+        this.tsRejeicao = LocalDateTime.now();
+    }
+
+    public void assinar() {
+        this.codigoVerificador = String.valueOf(UUID.randomUUID());
+    }
 }

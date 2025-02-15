@@ -15,7 +15,10 @@ public class Participante {
 
     private String nome;
 
-    public Participante(String nome) {
+    private String cpf;
+
+    public Participante(String nome, String cpf) {
         this.nome = nome;
+        this.cpf = cpf;
     }
 }

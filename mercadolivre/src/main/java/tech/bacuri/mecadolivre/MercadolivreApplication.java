@@ -10,6 +10,8 @@ import tech.bacuri.mecadolivre.entity.sumula.*;
 import tech.bacuri.mecadolivre.repository.sumula.*;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 
 @RequiredArgsConstructor
 @SpringBootApplication(exclude = SecurityAutoConfiguration.class)
@@ -21,6 +23,7 @@ public class MercadolivreApplication implements CommandLineRunner {
     private final ParticipanteRepository participanteRepository;
     private final SumulaRepository sumulaRepository;
     private final ReuniaoParticipanteRepository reuniaoParticipanteRepository;
+    private final RejeicaoRepository rejeicaoRepository;
 
     public static void main(String[] args) {
         SpringApplication.run(MercadolivreApplication.class, args);
@@ -29,8 +32,8 @@ public class MercadolivreApplication implements CommandLineRunner {
     @Transactional
     @Override
     public void run(String... args) throws Exception {
-        Participante jaimerson = participanteRepository.save(new Participante("Jaimerson"));
-        Participante gabriela = participanteRepository.save(new Participante("Gabriela"));
+        Participante jaimerson = participanteRepository.save(new Participante("Jaimerson", "12345678900"));
+        Participante gabriela = participanteRepository.save(new Participante("Gabriela", "12345678901"));
 
         Atividade atividade = ativiadeRepository.save(new Atividade(2023));
         Memorando memorando = memorandoRepository.save(new Memorando(atividade, "Objeto"));
@@ -42,8 +45,21 @@ public class MercadolivreApplication implements CommandLineRunner {
         AssinaturaSumula assinaturaSumula1 = new AssinaturaSumula(participante1.getParticipante());
         AssinaturaSumula assinaturaSumula2 = new AssinaturaSumula(participante2.getParticipante());
 
-        Sumula su = sumulaRepository.save(Sumula.criarSumulaInicial(selecionada, "redesenhando a súmulo", assinaturaSumula1, assinaturaSumula2));
+        AssinaturaJson assinaturaJson1 = new AssinaturaJson(jaimerson.getNome(), jaimerson.getCpf());
+        AssinaturaJson assinaturaJson2 = new AssinaturaJson(gabriela.getNome(), gabriela.getCpf());
 
-        su.assinar(gabriela);
+        List<AssinaturaJson> assinaturasJson = Arrays.asList(assinaturaJson1, assinaturaJson2);
+
+        Sumula sumula = sumulaRepository.save(Sumula.criarSumulaInicial(selecionada, "redesenhando a súmula", assinaturasJson, assinaturaSumula1, assinaturaSumula2));
+        sumula.assinar(gabriela);
+        sumula.assinar(jaimerson);
+
+        Rejeicao rejeicao = rejeicaoRepository.save(new Rejeicao(jaimerson, sumula, "esse redesenhando a súmula"));
+        rejeicao.assinar();
+
+        Sumula reelaboracao = sumulaRepository.save(Sumula.criarSumulaRejeicao(sumula));
+        reelaboracao.assinar(gabriela);
+        reelaboracao.assinar(jaimerson);
+
     }
 }

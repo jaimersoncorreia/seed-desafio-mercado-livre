@@ -34,4 +34,12 @@ public class AssinaturaSumula {
     public void associar(Sumula sumula) {
         this.sumula = sumula;
     }
+
+    public void removerAssinatura() {
+        this.tsAssinatura = null;
+    }
+
+    public AssinaturaSumula copia() {
+        return new AssinaturaSumula(this.getParticipante());
+    }
 }
