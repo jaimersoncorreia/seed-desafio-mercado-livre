@@ -6,7 +6,10 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import tech.bacuri.mecadolivre.entity.documento.AssinaturaParticipante;
+import tech.bacuri.mecadolivre.entity.documento.Documento;
 import tech.bacuri.mecadolivre.entity.sumula.*;
+import tech.bacuri.mecadolivre.repository.documento.DocumentoRepository;
 import tech.bacuri.mecadolivre.repository.sumula.*;
 
 import java.time.LocalDateTime;
@@ -24,6 +27,7 @@ public class MercadolivreApplication implements CommandLineRunner {
     private final SumulaRepository sumulaRepository;
     private final ReuniaoParticipanteRepository reuniaoParticipanteRepository;
     private final RejeicaoRepository rejeicaoRepository;
+    private final DocumentoRepository documentoRepository;
 
     public static void main(String[] args) {
         SpringApplication.run(MercadolivreApplication.class, args);
@@ -32,8 +36,18 @@ public class MercadolivreApplication implements CommandLineRunner {
     @Transactional
     @Override
     public void run(String... args) throws Exception {
+        /*
         sumula();
+        documento();
+         */
 
+    }
+
+    private void documento() {
+        AssinaturaParticipante jaimerson = new AssinaturaParticipante("00000000001", "Jaimerson");
+        AssinaturaParticipante gabriela = new AssinaturaParticipante("00000000002", "Gabriela");
+        Documento documentoSalvo = documentoRepository.save(new Documento("texto", List.of(jaimerson, gabriela)));
+        documentoSalvo.assinar("00000000001");
     }
 
     private void sumula() {
