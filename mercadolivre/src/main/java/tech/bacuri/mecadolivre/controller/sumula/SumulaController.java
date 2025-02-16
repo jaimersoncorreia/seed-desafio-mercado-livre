@@ -32,6 +32,21 @@ public class SumulaController {
                                      @PathVariable String cpf) {
 
         if (sumula.assinadoPor(cpf)) {
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body(Map.of("mensagem", "sumula [" + sumula.getPauta().toUpperCase() + "] assinada"));
+        }
+
+        sumula.assinar(cpf);
+        return ResponseEntity.ok(sumulaRepository.save(sumula));
+    }
+
+    @Transactional
+    @PostMapping("/{idsumula}/participantes/{cpf}/rejeitar")
+    public ResponseEntity<?> rejeitar(@PathVariable(name = "idsumula") Sumula sumula,
+                                      @PathVariable String cpf) {
+
+        if (sumula.assinadoPor(cpf)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("mensagem", "sumula assinada"));
         }
 

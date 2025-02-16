@@ -29,6 +29,10 @@ public class AssinaturaJson {
     }
 
     public void assinar() {
+        if(assinado()) {
+            return;
+        }
+
         this.tsAssinatura = LocalDateTime.now();
     }
 

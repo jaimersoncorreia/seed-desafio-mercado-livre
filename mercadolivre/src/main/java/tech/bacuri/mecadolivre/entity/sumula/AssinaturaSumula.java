@@ -29,6 +29,10 @@ public class AssinaturaSumula {
     }
 
     public void assinar() {
+        if (assinado()) {
+            return;
+        }
+
         this.tsAssinatura = LocalDateTime.now();
     }
 

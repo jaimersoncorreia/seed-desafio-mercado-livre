@@ -85,6 +85,8 @@ public class MercadolivreApplication implements CommandLineRunner {
     private void preparacaoSumulaController() {
         Participante jaimerson = participanteRepository.save(new Participante("Jaimerson", "00000000001"));
         Participante gabriela = participanteRepository.save(new Participante("Gabriela", "00000000002"));
+        Participante sofia = participanteRepository.save(new Participante("Sofia", "00000000003"));
+        Participante rebeca = participanteRepository.save(new Participante("Rebeca", "00000000004"));
 
         Atividade atividade = atividadeRepository.save(new Atividade(2023));
         Memorando memorando = memorandoRepository.save(new Memorando(atividade, "Objeto"));
@@ -92,6 +94,8 @@ public class MercadolivreApplication implements CommandLineRunner {
 
         ReuniaoParticipante participante1 = reuniaoParticipanteRepository.save(new ReuniaoParticipante(selecionada, jaimerson));
         ReuniaoParticipante participante2 = reuniaoParticipanteRepository.save(new ReuniaoParticipante(selecionada, gabriela));
+        ReuniaoParticipante participante3 = reuniaoParticipanteRepository.save(new ReuniaoParticipante(selecionada, sofia));
+        ReuniaoParticipante participante4 = reuniaoParticipanteRepository.save(new ReuniaoParticipante(selecionada, rebeca));
 
 //        AssinaturaSumula assinaturaSumula1 = new AssinaturaSumula(participante1.getParticipante());
 //        AssinaturaSumula assinaturaSumula2 = new AssinaturaSumula(participante2.getParticipante());

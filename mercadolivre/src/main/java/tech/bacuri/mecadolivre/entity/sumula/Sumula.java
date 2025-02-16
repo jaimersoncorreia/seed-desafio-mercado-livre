@@ -8,9 +8,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.util.Assert;
 import tech.bacuri.mecadolivre.converter.AssinaturasConverter;
+import tech.bacuri.mecadolivre.enums.StatusSumula;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -32,6 +34,9 @@ public class Sumula {
     @OneToOne
     private Sumula sumulaAnterior;
 
+    @Enumerated(EnumType.STRING)
+    private StatusSumula status;
+
     @NotNull
     @Column(columnDefinition = "text")
     @Convert(converter = AssinaturasConverter.class)
@@ -42,12 +47,31 @@ public class Sumula {
     @OneToMany(mappedBy = "sumula", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<AssinaturaSumula> assinaturas = new HashSet<>();
 
-    private Sumula(Reuniao reuniao, String pauta, Sumula sumulaAnterior, Set<AssinaturaSumula> assinaturas, Set<AssinaturaJson> assinaturasJson) {
+    private Sumula(Reuniao reuniao,
+                   String pauta,
+                   Sumula sumulaAnterior,
+                   Set<AssinaturaSumula> assinaturas,
+                   Set<AssinaturaJson> assinaturasJson, StatusSumula status) {
+        Assert.notNull(status, "não é permitido status null");
         this.reuniao = reuniao;
         this.pauta = pauta;
         this.sumulaAnterior = sumulaAnterior;
         this.assinaturasJson.addAll(assinaturasJson);
         this.assinaturas.addAll(assinaturas.stream().peek(assinaturaConsumer()).collect(Collectors.toSet()));
+        this.status = status;
+    }
+
+    public static Sumula criarSumulaInicial(Reuniao reuniao,
+                                            String pauta,
+                                            List<AssinaturaJson> assinaturasJson,
+                                            List<AssinaturaSumula> assinaturas) {
+        Set<AssinaturaSumula> assinaturaSumulas = new HashSet<>(assinaturas);
+        return new Sumula(reuniao,
+                pauta,
+                null,
+                assinaturaSumulas,
+                new HashSet<>(assinaturasJson),
+                StatusSumula.RASCUNHO);
     }
 
     private Consumer<AssinaturaSumula> assinaturaConsumer() {
@@ -66,15 +90,10 @@ public class Sumula {
                 .peek(AssinaturaJson::removerAssinatura)
                 .collect(Collectors.toSet());
 
-        return new Sumula(sumula.reuniao, sumula.pauta, sumula, assinaturaSumulas, assinaturasJson);
-    }
+        Assert.isTrue(Objects.equals(sumula.status, StatusSumula.CONTESTADA),
+                "há súmula está em situação [" + sumula.status + "]");
 
-    public static Sumula criarSumulaInicial(Reuniao reuniao,
-                                            String pauta,
-                                            List<AssinaturaJson> assinaturasJson,
-                                            List<AssinaturaSumula> assinaturas) {
-        Set<AssinaturaSumula> assinaturaSumulas = new HashSet<>(assinaturas);
-        return new Sumula(reuniao, pauta, null, assinaturaSumulas, new HashSet<>(assinaturasJson));
+        return new Sumula(sumula.reuniao, sumula.pauta, sumula, assinaturaSumulas, assinaturasJson, StatusSumula.RASCUNHO);
     }
 
     public void assinar(String cpf) {
@@ -87,6 +106,12 @@ public class Sumula {
                 .filter(assinaturaJson -> assinaturaJson.getCpf().equals(cpf))
                 .findFirst()
                 .ifPresent(AssinaturaJson::assinar);
+
+        this.status = todosAssinaram() ? StatusSumula.APROVADA : StatusSumula.PENDENTE_ASSINATURA;
+    }
+
+    public boolean todosAssinaram() {
+        return getAssinaturas().size() == getAssinaturas().stream().filter(AssinaturaSumula::assinado).count();
     }
 
     public boolean assinadoPor(String cpf) {
