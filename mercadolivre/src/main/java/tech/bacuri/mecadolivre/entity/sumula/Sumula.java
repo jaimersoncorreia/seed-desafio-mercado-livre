@@ -1,13 +1,14 @@
 package tech.bacuri.mecadolivre.entity.sumula;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import tech.bacuri.mecadolivre.converter.AssinaturaConverter;
+import org.springframework.util.Assert;
+import tech.bacuri.mecadolivre.converter.AssinaturasConverter;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -32,9 +33,11 @@ public class Sumula {
     private Sumula sumulaAnterior;
 
     @NotNull
-    @Convert(converter = AssinaturaConverter.class)
+    @Column(columnDefinition = "text")
+    @Convert(converter = AssinaturasConverter.class)
     private Set<AssinaturaJson> assinaturasJson = new HashSet<>();
 
+    @JsonIgnore
     @Size(min = 1)
     @OneToMany(mappedBy = "sumula", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<AssinaturaSumula> assinaturas = new HashSet<>();
@@ -69,20 +72,39 @@ public class Sumula {
     public static Sumula criarSumulaInicial(Reuniao reuniao,
                                             String pauta,
                                             List<AssinaturaJson> assinaturasJson,
-                                            AssinaturaSumula... assinaturas) {
-        Set<AssinaturaSumula> assinaturaSumulas = Arrays.stream(assinaturas).collect(Collectors.toSet());
+                                            List<AssinaturaSumula> assinaturas) {
+        Set<AssinaturaSumula> assinaturaSumulas = new HashSet<>(assinaturas);
         return new Sumula(reuniao, pauta, null, assinaturaSumulas, new HashSet<>(assinaturasJson));
     }
 
-    public void assinar(Participante participante) {
+    public void assinar(String cpf) {
         this.getAssinaturas().stream()
-                .filter(assinatura -> assinatura.getParticipante().getId().equals(participante.getId()))
+                .filter(assinatura -> assinatura.getParticipante().getCpf().equals(cpf))
                 .findFirst()
                 .ifPresent(AssinaturaSumula::assinar);
 
         this.getAssinaturasJson().stream()
-                .filter(assinaturaJson -> assinaturaJson.getCpf().equals(participante.getCpf()))
+                .filter(assinaturaJson -> assinaturaJson.getCpf().equals(cpf))
                 .findFirst()
                 .ifPresent(AssinaturaJson::assinar);
+    }
+
+    public boolean assinadoPor(String cpf) {
+        List<AssinaturaSumula> assinaturas = this.assinaturas.stream()
+                .filter(assinatura -> assinatura.ehIgual(cpf))
+                .toList();
+
+        Assert.notEmpty(assinaturas, "participante não encontrada");
+        boolean banco = assinaturas.stream().anyMatch(AssinaturaSumula::assinado);
+
+        List<AssinaturaJson> jsons = this.assinaturasJson.stream()
+                .filter(assinatura -> assinatura.ehIgual(cpf))
+                .toList();
+
+        Assert.notEmpty(jsons, "participante não encontrada");
+
+        boolean json = jsons.stream().anyMatch(AssinaturaJson::assinado);
+
+        return banco && json;
     }
 }

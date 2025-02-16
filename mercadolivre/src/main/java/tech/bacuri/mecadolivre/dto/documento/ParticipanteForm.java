@@ -9,7 +9,7 @@ import tech.bacuri.mecadolivre.entity.documento.AssinaturaParticipante;
 @Getter
 @NoArgsConstructor(onConstructor_ = @Deprecated)
 @AllArgsConstructor
-public class ParticipantesForm {
+public class ParticipanteForm {
     @NotBlank
     private String cpf;
 

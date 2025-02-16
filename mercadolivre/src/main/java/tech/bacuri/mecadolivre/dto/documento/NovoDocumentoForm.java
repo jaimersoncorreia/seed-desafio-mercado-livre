@@ -18,12 +18,11 @@ public class NovoDocumentoForm {
     private String texto;
 
     @Size(min = 1)
-    private final List<ParticipantesForm> participantes = new ArrayList<>();
-
+    private final List<ParticipanteForm> participantes = new ArrayList<>();
 
     public Documento toEntity() {
         List<AssinaturaParticipante> participantes = this.participantes.stream()
-                .map(ParticipantesForm::toEntity)
+                .map(ParticipanteForm::toEntity)
                 .collect(Collectors.toList());
 
         return new Documento(this.texto, participantes);

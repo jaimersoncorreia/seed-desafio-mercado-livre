@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @NoArgsConstructor(onConstructor_ = @Deprecated)
 @Getter
@@ -22,6 +23,11 @@ public class AssinaturaJson {
         this.cpf = cpf;
     }
 
+    public AssinaturaJson(Participante participante) {
+        this.nome = participante.getNome();
+        this.cpf = participante.getCpf();
+    }
+
     public void assinar() {
         this.tsAssinatura = LocalDateTime.now();
     }
@@ -32,5 +38,13 @@ public class AssinaturaJson {
 
     public AssinaturaJson copia() {
         return new AssinaturaJson(this.nome, this.cpf);
+    }
+
+    public boolean ehIgual(String cpf) {
+        return Objects.equals(this.cpf, cpf);
+    }
+
+    public boolean assinado() {
+        return Objects.nonNull(this.tsAssinatura);
     }
 }
