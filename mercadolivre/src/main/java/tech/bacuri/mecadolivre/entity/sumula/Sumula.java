@@ -6,16 +6,17 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.util.Assert;
 import tech.bacuri.mecadolivre.converter.AssinaturasConverter;
 import tech.bacuri.mecadolivre.enums.StatusSumula;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+
+import static tech.bacuri.mecadolivre.enums.StatusSumula.APROVADA;
+import static tech.bacuri.mecadolivre.enums.StatusSumula.CONTESTADA;
 
 @NoArgsConstructor(onConstructor_ = @Deprecated)
 @Getter
@@ -36,6 +37,10 @@ public class Sumula {
 
     @Enumerated(EnumType.STRING)
     private StatusSumula status;
+
+    @Setter
+    private String codigoVerificador;
+
 
     @NotNull
     @Column(columnDefinition = "text")
@@ -78,7 +83,7 @@ public class Sumula {
         return assinaturaSumula -> assinaturaSumula.associar(this);
     }
 
-    public static Sumula criarSumulaRejeicao(Sumula sumula) {
+    public static Sumula criarSumulaRascunho(Sumula sumula) {
         Set<AssinaturaSumula> assinaturaSumulas = sumula.getAssinaturas().stream()
                 .map(AssinaturaSumula::copia)
                 .peek(AssinaturaSumula::removerAssinatura)
@@ -90,8 +95,9 @@ public class Sumula {
                 .peek(AssinaturaJson::removerAssinatura)
                 .collect(Collectors.toSet());
 
-        Assert.isTrue(Objects.equals(sumula.status, StatusSumula.CONTESTADA),
-                "há súmula está em situação [" + sumula.status + "]");
+
+        Assert.isTrue(sumula.pendenteAssinatura(), "não pode rejeitar súmula que está em situação [" + sumula.status + "]");
+        sumula.contestar();
 
         return new Sumula(sumula.reuniao, sumula.pauta, sumula, assinaturaSumulas, assinaturasJson, StatusSumula.RASCUNHO);
     }
@@ -107,7 +113,13 @@ public class Sumula {
                 .findFirst()
                 .ifPresent(AssinaturaJson::assinar);
 
-        this.status = todosAssinaram() ? StatusSumula.APROVADA : StatusSumula.PENDENTE_ASSINATURA;
+        Assert.isTrue(!this.contestada(), "não possível assinar súmula com situação [" + this.status + "]");
+
+        if (!this.pendenteAssinatura()) {
+            this.setCodigoVerificador(UUID.randomUUID().toString());
+        }
+
+        this.status = todosAssinaram() ? APROVADA : StatusSumula.EM_ASSINATURA;
     }
 
     public boolean todosAssinaram() {
@@ -131,5 +143,36 @@ public class Sumula {
         boolean json = jsons.stream().anyMatch(AssinaturaJson::assinado);
 
         return banco && json;
+    }
+
+    public boolean aprovada() {
+        return Objects.equals(this.status, APROVADA);
+    }
+
+    public boolean contestada() {
+        return Objects.equals(this.status, CONTESTADA);
+    }
+
+    public void contestar() {
+        this.status = CONTESTADA;
+    }
+
+    public Participante getParticipante(String cpf) {
+        return this.assinaturas.stream()
+                .filter(assinatura -> assinatura.ehIgual(cpf))
+                .map(AssinaturaSumula::getParticipante)
+                .findFirst().orElseThrow(() -> new EntityNotFoundException("participante não encontrado"));
+    }
+
+    public boolean naoAprovada() {
+        return !aprovada();
+    }
+
+    public boolean pendenteAssinatura() {
+        return Objects.equals(this.status, StatusSumula.EM_ASSINATURA);
+    }
+
+    public boolean rascunhada() {
+        return Objects.equals(this.status, StatusSumula.RASCUNHO);
     }
 }

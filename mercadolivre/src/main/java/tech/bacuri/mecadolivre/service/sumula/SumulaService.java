@@ -4,13 +4,17 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+import tech.bacuri.mecadolivre.dto.sumula.NovaRejeicaoForm;
 import tech.bacuri.mecadolivre.dto.sumula.NovaSumulaForm;
 import tech.bacuri.mecadolivre.entity.sumula.*;
+import tech.bacuri.mecadolivre.repository.sumula.RejeicaoRepository;
 import tech.bacuri.mecadolivre.repository.sumula.ReuniaoRepository;
 import tech.bacuri.mecadolivre.repository.sumula.SumulaRepository;
 
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -18,10 +22,16 @@ import java.util.stream.Collectors;
 public class SumulaService {
     private final ReuniaoRepository reuniaoRepository;
     private final SumulaRepository sumulaRepository;
+    private final RejeicaoRepository rejeicaoRepository;
 
     @Transactional
     public Sumula criarSumulaInicial(@Valid NovaSumulaForm form) {
         Reuniao reuniao = reuniaoRepository.findById(form.getIdRuniao()).orElseThrow();
+
+        if (sumulaRepository.existsSumulasByReuniao(reuniao)) {
+            throw new IllegalStateException("já existe súmula inicial para essa reunião");
+        }
+
         String pauta = form.getPauta();
         Set<ReuniaoParticipante> participantes = reuniao.getParticipantes();
 
@@ -35,5 +45,13 @@ public class SumulaService {
 
         Sumula sumula = Sumula.criarSumulaInicial(reuniao, pauta, assinaturasJson, sumulas);
         return sumulaRepository.save(sumula);
+    }
+
+    @Transactional
+    public Sumula rejeitarSumula(Sumula sumula, String cpf, @Valid NovaRejeicaoForm form) {
+        Assert.notNull(sumula, "sumula não deveria está nula");
+        Assert.isTrue(sumula.naoAprovada(), "sumula [" + sumula.getPauta().toUpperCase() + "] aprovada");
+        rejeicaoRepository.save(Rejeicao.criar(sumula, cpf, form.getPauta(), UUID.randomUUID().toString()));
+        return sumulaRepository.save(Sumula.criarSumulaRascunho(sumula));
     }
 }

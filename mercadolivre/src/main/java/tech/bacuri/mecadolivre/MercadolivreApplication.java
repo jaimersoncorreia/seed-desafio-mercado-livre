@@ -6,11 +6,13 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import tech.bacuri.mecadolivre.dto.sumula.NovaSumulaForm;
 import tech.bacuri.mecadolivre.entity.documento.AssinaturaParticipante;
 import tech.bacuri.mecadolivre.entity.documento.Documento;
 import tech.bacuri.mecadolivre.entity.sumula.*;
 import tech.bacuri.mecadolivre.repository.documento.DocumentoRepository;
 import tech.bacuri.mecadolivre.repository.sumula.*;
+import tech.bacuri.mecadolivre.service.sumula.SumulaService;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -28,19 +30,21 @@ public class MercadolivreApplication implements CommandLineRunner {
     private final ReuniaoParticipanteRepository reuniaoParticipanteRepository;
     private final RejeicaoRepository rejeicaoRepository;
     private final DocumentoRepository documentoRepository;
+    private final SumulaService sumulaService;
 
     public static void main(String[] args) {
         SpringApplication.run(MercadolivreApplication.class, args);
     }
 
-    @Transactional
     @Override
     public void run(String... args) throws Exception {
         /*
         sumula();
         documento();
          */
-        preparacaoSumulaController();
+        preparacaoCriarSumulaInicialController();
+        preparacaoAssinaturaSumulaInicialController();
+        preparacaoRejeitarSumulaInicialController();
 
     }
 
@@ -51,7 +55,8 @@ public class MercadolivreApplication implements CommandLineRunner {
         documentoSalvo.assinar("00000000001");
     }
 
-    private void sumula() {
+    @Transactional
+    protected void sumula() {
         Participante jaimerson = participanteRepository.save(new Participante("Jaimerson", "12345678900"));
         Participante gabriela = participanteRepository.save(new Participante("Gabriela", "12345678901"));
 
@@ -74,15 +79,16 @@ public class MercadolivreApplication implements CommandLineRunner {
         sumula.assinar(gabriela.getCpf());
         sumula.assinar(jaimerson.getCpf());
 
-        Rejeicao rejeicao = rejeicaoRepository.save(new Rejeicao(jaimerson, sumula, "esse redesenhando a súmula"));
+        Rejeicao rejeicao = rejeicaoRepository.save(new Rejeicao(jaimerson, sumula, "esse redesenhando a súmula", "SCVD"));
         rejeicao.assinar();
 
-        Sumula reelaboracao = sumulaRepository.save(Sumula.criarSumulaRejeicao(sumula));
+        Sumula reelaboracao = sumulaRepository.save(Sumula.criarSumulaRascunho(sumula));
         reelaboracao.assinar(gabriela.getCpf());
         reelaboracao.assinar(jaimerson.getCpf());
     }
 
-    private void preparacaoSumulaController() {
+    @Transactional
+    protected void preparacaoCriarSumulaInicialController() {
         Participante jaimerson = participanteRepository.save(new Participante("Jaimerson", "00000000001"));
         Participante gabriela = participanteRepository.save(new Participante("Gabriela", "00000000002"));
         Participante sofia = participanteRepository.save(new Participante("Sofia", "00000000003"));
@@ -97,12 +103,33 @@ public class MercadolivreApplication implements CommandLineRunner {
         ReuniaoParticipante participante3 = reuniaoParticipanteRepository.save(new ReuniaoParticipante(selecionada, sofia));
         ReuniaoParticipante participante4 = reuniaoParticipanteRepository.save(new ReuniaoParticipante(selecionada, rebeca));
 
-//        AssinaturaSumula assinaturaSumula1 = new AssinaturaSumula(participante1.getParticipante());
-//        AssinaturaSumula assinaturaSumula2 = new AssinaturaSumula(participante2.getParticipante());
+        Atividade atividade1 = atividadeRepository.save(new Atividade(2024));
+        Memorando memorando1 = memorandoRepository.save(new Memorando(atividade1, "Objeto"));
+        Reuniao selecionada1 = reuniaoRepository.save(new Reuniao(memorando1, LocalDateTime.now()));
 
-//        AssinaturaJson assinaturaJson1 = new AssinaturaJson(jaimerson.getNome(), jaimerson.getCpf());
-//        AssinaturaJson assinaturaJson2 = new AssinaturaJson(gabriela.getNome(), gabriela.getCpf());
+        ReuniaoParticipante participante11 = reuniaoParticipanteRepository.save(new ReuniaoParticipante(selecionada1, jaimerson));
+        ReuniaoParticipante participante12 = reuniaoParticipanteRepository.save(new ReuniaoParticipante(selecionada1, gabriela));
+        ReuniaoParticipante participante13 = reuniaoParticipanteRepository.save(new ReuniaoParticipante(selecionada1, sofia));
+        ReuniaoParticipante participante14 = reuniaoParticipanteRepository.save(new ReuniaoParticipante(selecionada1, rebeca));
 
-//        List<AssinaturaJson> assinaturasJson = Arrays.asList(assinaturaJson1, assinaturaJson2);
+    }
+
+    @Transactional
+    protected void preparacaoAssinaturaSumulaInicialController() {
+        reuniaoRepository.findById(1L).ifPresent(reuniao -> {
+            System.out.println("reuniao = " + reuniao.getId());
+            sumulaService.criarSumulaInicial(new NovaSumulaForm(reuniao.getId(), "pauta via application"));
+        });
+    }
+
+    @Transactional
+    protected void preparacaoRejeitarSumulaInicialController() {
+        sumulaRepository.findById(1L).ifPresent(sumula -> {
+//            sumula.assinar("00000000001");
+//            sumula.assinar("00000000002");
+            sumula.assinar("00000000003");
+            sumula.assinar("00000000004");
+            sumulaRepository.save(sumula);
+        });
     }
 }
