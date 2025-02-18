@@ -52,6 +52,9 @@ public class SumulaService {
         Assert.notNull(sumula, "sumula não deveria está nula");
         Assert.isTrue(sumula.naoAprovada(), "sumula [" + sumula.getPauta().toUpperCase() + "] aprovada");
         rejeicaoRepository.save(Rejeicao.criar(sumula, cpf, form.getPauta(), UUID.randomUUID().toString()));
+        Assert.isTrue(sumula.pendenteAssinatura(), "não pode rejeitar súmula que está em situação [" + sumula.getStatus() + "]");
+        sumula.contestar();
+        sumulaRepository.save(sumula);
         return sumulaRepository.save(Sumula.criarSumulaRascunho(sumula));
     }
 }

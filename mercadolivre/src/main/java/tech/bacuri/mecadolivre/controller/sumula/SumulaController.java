@@ -28,8 +28,8 @@ public class SumulaController {
     }
 
     @Transactional
-    @PostMapping("/{idsumula}/participantes/{cpf}/assinar")
-    public ResponseEntity<?> assinar(@PathVariable(name = "idsumula") Sumula sumula,
+    @PostMapping("/{idSumula}/participantes/{cpf}/assinar")
+    public ResponseEntity<?> assinar(@PathVariable(name = "idSumula") Sumula sumula,
                                      @PathVariable String cpf) {
 
         if (sumula.assinadoPor(cpf)) {
@@ -49,8 +49,8 @@ public class SumulaController {
     }
 
     @Transactional
-    @PostMapping("/{idsumula}/participantes/{cpf}/rejeitar")
-    public ResponseEntity<?> rejeitar(@PathVariable(name = "idsumula") Sumula sumula,
+    @PostMapping("/{idSumula}/participantes/{cpf}/rejeitar")
+    public ResponseEntity<?> rejeitar(@PathVariable(name = "idSumula") Sumula sumula,
                                       @PathVariable String cpf,
                                       @RequestBody @Valid NovaRejeicaoForm form) {
 

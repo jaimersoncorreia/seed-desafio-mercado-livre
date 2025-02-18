@@ -41,7 +41,6 @@ public class Sumula {
     @Setter
     private String codigoVerificador;
 
-
     @NotNull
     @Column(columnDefinition = "text")
     @Convert(converter = AssinaturasConverter.class)
@@ -94,10 +93,6 @@ public class Sumula {
                 .map(AssinaturaJson::copia)
                 .peek(AssinaturaJson::removerAssinatura)
                 .collect(Collectors.toSet());
-
-
-        Assert.isTrue(sumula.pendenteAssinatura(), "não pode rejeitar súmula que está em situação [" + sumula.status + "]");
-        sumula.contestar();
 
         return new Sumula(sumula.reuniao, sumula.pauta, sumula, assinaturaSumulas, assinaturasJson, StatusSumula.RASCUNHO);
     }
